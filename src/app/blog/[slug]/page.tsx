@@ -98,6 +98,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     await supabase.from('articles').update({ views: (article.views || 0) + 1 }).eq('id', article.id);
   }
 
+  // Ajouter la vue dans l'historique en temps réel (pour le dashboard admin)
+  await supabase.from('page_views').insert([{ article_id: article.id, session_id: 'anonymous-server' }]);
+
   // JSON-LD Schema.org pour les résultats enrichis Google
   const jsonLd = {
     '@context': 'https://schema.org',

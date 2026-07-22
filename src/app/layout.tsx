@@ -57,6 +57,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { GoogleAnalytics } from '@next/third-parties/google';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -85,6 +87,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${firaCode.variable} antialiased min-h-screen flex flex-col bg-[var(--color-space-800)] text-[var(--color-text-primary)]`}
       >
+        <GoogleAnalytics gaId="G-XXXXXXXXXX" />
         <Header />
         
         {/* AdSense Leaderboard Slot - Toujours visible sous le header sur bureau */}

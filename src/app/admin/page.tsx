@@ -21,31 +21,67 @@ export default async function AdminDashboard() {
   const draftsCount = articles?.filter(a => a.status === 'draft').length || 0;
   const totalViews = articles?.reduce((sum, a) => sum + (a.views || 0), 0) || 0;
 
+  // Calculer les dates pour les requêtes
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1).toISOString();
+  const fiveMinutesAgo = new Date(now.getTime() - 5 * 60000).toISOString();
+
+  // Requêtes pour les statistiques en temps réel
+  const [{ count: viewsToday }, { count: viewsYesterday }, { count: viewsLive }] = await Promise.all([
+    supabase.from('page_views').select('*', { count: 'exact', head: true }).gte('created_at', today),
+    supabase.from('page_views').select('*', { count: 'exact', head: true }).gte('created_at', yesterday).lt('created_at', today),
+    supabase.from('page_views').select('*', { count: 'exact', head: true }).gte('created_at', fiveMinutesAgo)
+  ]);
+
   return (
     <div className="max-w-6xl mx-auto">
       <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white mb-1">Tableau de bord</h1>
-          <p className="text-[var(--color-text-secondary)] text-sm">Gérez vos articles, catégories et paramètres depuis cet espace.</p>
+          <p className="text-[var(--color-text-secondary)] text-sm">Gérez vos articles, catégories et surveillez votre trafic.</p>
         </div>
         <Link href="/admin/editor" className="bg-[var(--color-accent-cyan)] hover:bg-cyan-400 text-black font-bold py-2.5 px-6 rounded-xl flex items-center gap-2 transition-colors w-fit">
           <Plus size={18} /> Nouvel Article
         </Link>
       </header>
 
-      {/* Statistiques Rapides */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div className="glass p-6 rounded-2xl border border-[var(--color-border-subtle)]">
-          <div className="text-[var(--color-text-secondary)] text-sm font-medium mb-1">Articles publiés</div>
-          <div className="text-3xl font-bold text-white">{publishedCount}</div>
+      {/* Trafic en Temps Réel */}
+      <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> Trafic en direct
+      </h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div className="glass p-5 rounded-2xl border border-[var(--color-border-subtle)] relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-3 opacity-10"><Filter size={32} /></div>
+          <div className="text-[var(--color-text-secondary)] text-xs font-medium mb-1 uppercase tracking-wider">Visiteurs (5 min)</div>
+          <div className="text-3xl font-bold text-white flex items-end gap-2">
+            {viewsLive || 0} <span className="text-sm font-normal text-green-400 animate-pulse">en ligne</span>
+          </div>
         </div>
-        <div className="glass p-6 rounded-2xl border border-[var(--color-border-subtle)]">
-          <div className="text-[var(--color-text-secondary)] text-sm font-medium mb-1">Vues totales</div>
-          <div className="text-3xl font-bold text-[var(--color-accent-cyan)]">{totalViews.toLocaleString()}</div>
+        <div className="glass p-5 rounded-2xl border border-[var(--color-border-subtle)]">
+          <div className="text-[var(--color-text-secondary)] text-xs font-medium mb-1 uppercase tracking-wider">Vues Aujourd'hui</div>
+          <div className="text-3xl font-bold text-[var(--color-accent-cyan)]">{viewsToday || 0}</div>
         </div>
-        <div className="glass p-6 rounded-2xl border border-[var(--color-border-subtle)]">
-          <div className="text-[var(--color-text-secondary)] text-sm font-medium mb-1">Brouillons en attente</div>
-          <div className="text-3xl font-bold text-orange-400">{draftsCount}</div>
+        <div className="glass p-5 rounded-2xl border border-[var(--color-border-subtle)]">
+          <div className="text-[var(--color-text-secondary)] text-xs font-medium mb-1 uppercase tracking-wider">Vues Hier</div>
+          <div className="text-3xl font-bold text-[var(--color-accent-blue)]">{viewsYesterday || 0}</div>
+        </div>
+        <div className="glass p-5 rounded-2xl border border-[var(--color-border-subtle)]">
+          <div className="text-[var(--color-text-secondary)] text-xs font-medium mb-1 uppercase tracking-wider">Total Historique</div>
+          <div className="text-3xl font-bold text-[var(--color-text-primary)]">{totalViews.toLocaleString()}</div>
+        </div>
+      </div>
+
+      {/* Gestion de Contenu */}
+      <h2 className="text-xl font-bold text-white mb-4">Gestion de Contenu</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div className="glass p-5 rounded-xl border border-[var(--color-border-subtle)] flex justify-between items-center">
+          <span className="text-[var(--color-text-secondary)] font-medium">Articles publiés</span>
+          <span className="text-2xl font-bold text-white">{publishedCount}</span>
+        </div>
+        <div className="glass p-5 rounded-xl border border-[var(--color-border-subtle)] flex justify-between items-center">
+          <span className="text-[var(--color-text-secondary)] font-medium">Brouillons</span>
+          <span className="text-2xl font-bold text-orange-400">{draftsCount}</span>
         </div>
       </div>
 

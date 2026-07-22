@@ -100,3 +100,15 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('images', 'images', true)
 CREATE POLICY "Images publiques" ON storage.objects FOR SELECT USING (bucket_id = 'images');
 CREATE POLICY "Admins upload images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'images' AND auth.role() = 'authenticated');
 CREATE POLICY "Admins delete images" ON storage.objects FOR DELETE USING (bucket_id = 'images' AND auth.role() = 'authenticated');
+
+-- 7. Table des Vues (Analytics en direct)
+CREATE TABLE public.page_views (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    article_id UUID REFERENCES public.articles(id) ON DELETE CASCADE,
+    session_id VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.page_views ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Tout le monde peut ajouter une vue" ON public.page_views FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admins peuvent lire les vues" ON public.page_views FOR SELECT USING (auth.role() = 'authenticated');
