@@ -87,7 +87,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${firaCode.variable} antialiased min-h-screen flex flex-col bg-[var(--color-space-800)] text-[var(--color-text-primary)]`}
       >
-        <GoogleAnalytics gaId="G-XXXXXXXXXX" />
+        <GoogleAnalytics gaId="G-Z4D077646E" />
         <Header />
         
         {/* AdSense Leaderboard Slot - Toujours visible sous le header sur bureau */}
