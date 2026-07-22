@@ -89,6 +89,12 @@ Le schéma PostgreSQL (`supabase_schema.sql`) comporte 3 tables principales :
 - `AdBanner.tsx` : Composant Wrapper très important. Il contourne les erreurs liées au React Strict Mode (TagError sur les `<ins>`) en s'assurant de ne push l'AdSense que si le composant est vide via un `useRef`.
 - `Sidebar.tsx` : Contient la logique d'affichage latérale. Réutilisé sur `/categories/[slug]` et `/blog/[slug]`.
 
+## 7. Optimisations SEO & Visibilité
+Afin de rivaliser avec la concurrence, une architecture SEO complète a été implémentée :
+- **Metadata Dynamique** : Les titres, descriptions, Open Graph et Twitter Cards sont générés dynamiquement par Server Component (`generateMetadata`) sur `/blog/[slug]` et `/categories/[slug]`.
+- **Sitemap & Robots.txt** : Un `sitemap.xml` dynamique est généré via `src/app/sitemap.ts` recensant tous les articles publiés. Un `robots.txt` autorise les bots (sauf sur `/admin`).
+- **Données Structurées (JSON-LD)** : Injection de balises `Article` et `BreadcrumbList` sur les articles, et `WebSite` sur le `layout.tsx` global pour activer les Rich Snippets de Google.
+
 ---
 
-*Note: Ce projet est construit de façon modulaire. Les données sont actuellement "mockées" (fausses données en dur) dans l'UI du frontend. La prochaine grande phase technique est le remplacement de ces fausses données par des appels "Server-Side" à Supabase en utilisant `createClient()`.*
+*Note: L'application est désormais entièrement connectée en production à Supabase. Le rendu est Server-Side et optimisé par Turbopack.*
