@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Script from "next/script";
 
 export default function AdBanner({
@@ -16,18 +16,28 @@ export default function AdBanner({
   responsive?: boolean;
   className?: string;
 }) {
+  const adRef = useRef<HTMLModElement>(null);
+
   useEffect(() => {
     try {
-      // @ts-ignore
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (err) {
-      console.error("AdSense error:", err);
+      if (adRef.current) {
+        // Ne push que si l'annonce n'est pas déjà chargée (évite l'erreur "already have ads in them")
+        if (!adRef.current.getAttribute("data-adsbygoogle-status")) {
+          // @ts-ignore
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        }
+      }
+    } catch (err: any) {
+      if (err.message && !err.message.includes("already have ads")) {
+        console.error("AdSense error:", err);
+      }
     }
   }, []);
 
   return (
     <div className={`ad-slot ad-slot--${format} ${position ? `ad-position-${position}` : ""} ${className} flex justify-center my-4 overflow-hidden`}>
       <ins
+        ref={adRef}
         className="adsbygoogle"
         style={{ display: "block", width: "100%" }}
         data-ad-client="ca-pub-XXXXXX" // TODO: Add real publisher ID
