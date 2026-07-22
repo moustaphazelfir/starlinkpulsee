@@ -100,7 +100,7 @@ export default async function Home() {
               <p className="text-[var(--color-text-secondary)] mb-6 flex-grow">
                 Guide pas à pas pour installer votre antenne, configurer le routeur et optimiser le WiFi.
               </p>
-              <Link href="/blog/installer-starlink-etape-par-etape" className="text-[var(--color-accent-cyan)] font-medium flex items-center gap-1 hover:gap-2 transition-all">
+              <Link href="/blog/comment-installer-starlink-etape-par-etape-guide-complet" className="text-[var(--color-accent-cyan)] font-medium flex items-center gap-1 hover:gap-2 transition-all">
                 Voir les tutos <ArrowRight size={16} />
               </Link>
             </div>
