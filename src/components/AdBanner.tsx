@@ -40,7 +40,7 @@ export default function AdBanner({
         ref={adRef}
         className="adsbygoogle"
         style={{ display: "block", width: "100%" }}
-        data-ad-client="ca-pub-XXXXXX" // TODO: Add real publisher ID
+        data-ad-client="ca-pub-8359281173942920"
         data-ad-slot={slotId}
         data-ad-format={format}
         data-full-width-responsive={responsive ? "true" : "false"}
@@ -48,7 +48,7 @@ export default function AdBanner({
       <Script
         id={`adsense-script-${slotId}`}
         async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXX" // TODO: Add real publisher ID
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8359281173942920"
         crossOrigin="anonymous"
         strategy="lazyOnload"
       />
