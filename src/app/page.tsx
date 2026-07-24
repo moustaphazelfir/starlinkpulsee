@@ -105,7 +105,7 @@ export default async function Home() {
               </span>
             </Link>
 
-            <Link href="/blog/ameliorer-la-vitesse-internet-ping-starlink" className="glass glass-hover p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 group">
+            <Link href="/blog/maximiser-les-debits-starlink-astuces-de-pro-pour-reduire-le-ping-et-supprimer-les-obstructions" className="glass glass-hover p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 group">
               <div className="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-[var(--color-accent-purple)] mb-6 group-hover:scale-110 transition-transform">
                 <Zap size={32} />
               </div>
