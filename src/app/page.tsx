@@ -79,44 +79,44 @@ export default async function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glass glass-hover p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2">
-              <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-[var(--color-accent-blue)] mb-6">
+            <Link href="/blog/guide-complet-starlink-c-est-quoi-l-internet-par-satellite-de-spacex" className="glass glass-hover p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 group">
+              <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-[var(--color-accent-blue)] mb-6 group-hover:scale-110 transition-transform">
                 <BookOpen size={32} />
               </div>
-              <h3 className="text-xl font-bold mb-3">Découvrir Starlink</h3>
+              <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[var(--color-accent-cyan)] transition-colors">Découvrir Starlink</h3>
               <p className="text-[var(--color-text-secondary)] mb-6 flex-grow">
                 Comprenez comment fonctionne l'internet par satellite de SpaceX et s'il est fait pour vous.
               </p>
-              <Link href="/blog/guide-complet-starlink-c-est-quoi-l-internet-par-satellite-de-spacex" className="text-[var(--color-accent-cyan)] font-medium flex items-center gap-1 hover:gap-2 transition-all">
+              <span className="text-[var(--color-accent-cyan)] font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                 Lire le guide <ArrowRight size={16} />
-              </Link>
-            </div>
+              </span>
+            </Link>
 
-            <div className="glass glass-hover p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2">
-              <div className="w-16 h-16 rounded-full bg-cyan-500/10 flex items-center justify-center text-[var(--color-accent-cyan)] mb-6">
+            <Link href="/blog/comment-installer-starlink-etape-par-etape-guide-complet" className="glass glass-hover p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 group">
+              <div className="w-16 h-16 rounded-full bg-cyan-500/10 flex items-center justify-center text-[var(--color-accent-cyan)] mb-6 group-hover:scale-110 transition-transform">
                 <Settings size={32} />
               </div>
-              <h3 className="text-xl font-bold mb-3">Installation & Config</h3>
+              <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[var(--color-accent-cyan)] transition-colors">Installation & Config</h3>
               <p className="text-[var(--color-text-secondary)] mb-6 flex-grow">
                 Guide pas à pas pour installer votre antenne, configurer le routeur et optimiser le WiFi.
               </p>
-              <Link href="/blog/comment-installer-starlink-etape-par-etape-guide-complet" className="text-[var(--color-accent-cyan)] font-medium flex items-center gap-1 hover:gap-2 transition-all">
+              <span className="text-[var(--color-accent-cyan)] font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                 Voir les tutos <ArrowRight size={16} />
-              </Link>
-            </div>
+              </span>
+            </Link>
 
-            <div className="glass glass-hover p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2">
-              <div className="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-[var(--color-accent-purple)] mb-6">
+            <Link href="/blog/ameliorer-la-vitesse-internet-ping-starlink" className="glass glass-hover p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2 group">
+              <div className="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-[var(--color-accent-purple)] mb-6 group-hover:scale-110 transition-transform">
                 <Zap size={32} />
               </div>
-              <h3 className="text-xl font-bold mb-3">Maximiser les débits</h3>
+              <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[var(--color-accent-cyan)] transition-colors">Maximiser les débits</h3>
               <p className="text-[var(--color-text-secondary)] mb-6 flex-grow">
                 Astuces de pro pour réduire le ping, éviter les obstructions et booster votre connexion.
               </p>
-              <Link href="/blog/ameliorer-la-vitesse-internet-ping-starlink" className="text-[var(--color-accent-cyan)] font-medium flex items-center gap-1 hover:gap-2 transition-all">
+              <span className="text-[var(--color-accent-cyan)] font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
                 Optimiser <ArrowRight size={16} />
-              </Link>
-            </div>
+              </span>
+            </Link>
           </div>
         </section>
 
