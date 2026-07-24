@@ -25,13 +25,25 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://starlinkpulsee.com
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
   const supabase = await createClient();
+  const rawSlug = resolvedParams.slug;
 
-  const { data: article } = await supabase
+  let { data: article } = await supabase
     .from('articles')
     .select('title, excerpt, featured_image, created_at, profiles ( full_name )')
-    .eq('slug', resolvedParams.slug)
+    .eq('slug', rawSlug)
     .eq('status', 'published')
-    .single();
+    .maybeSingle();
+
+  if (!article) {
+    const keywords = rawSlug.split('-').filter(w => w.length > 3).slice(0, 2).join('%');
+    const { data: fallback } = await supabase
+      .from('articles')
+      .select('title, excerpt, featured_image, created_at, profiles ( full_name )')
+      .or(`slug.ilike.%${keywords}%,title.ilike.%${keywords}%`)
+      .eq('status', 'published')
+      .limit(1);
+    if (fallback && fallback.length > 0) article = fallback[0];
+  }
 
   if (!article) {
     return { title: 'Article introuvable — Starlinkpulsee' };
@@ -48,7 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: article.title,
       description,
-      url: `${SITE_URL}/blog/${resolvedParams.slug}`,
+      url: `${SITE_URL}/blog/${rawSlug}`,
       siteName: 'Starlinkpulsee',
       images: [{ url: imageUrl, width: 1200, height: 630, alt: article.title }],
       locale: 'fr_FR',
@@ -62,7 +74,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       images: [imageUrl],
     },
     alternates: {
-      canonical: `${SITE_URL}/blog/${resolvedParams.slug}`,
+      canonical: `${SITE_URL}/blog/${rawSlug}`,
     },
   };
 }
@@ -72,7 +84,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const articleSlug = resolvedParams.slug;
   const supabase = await createClient();
 
-  const { data: article, error } = await supabase
+  let { data: article } = await supabase
     .from('articles')
     .select(`
       *,
@@ -81,9 +93,26 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     `)
     .eq('slug', articleSlug)
     .eq('status', 'published')
-    .single();
+    .maybeSingle();
 
-  if (error || !article) {
+  if (!article) {
+    const keywords = articleSlug.split('-').filter(w => w.length > 3).slice(0, 2).join('%');
+    const { data: fallbackList } = await supabase
+      .from('articles')
+      .select(`
+        *,
+        categories ( name, slug ),
+        profiles ( full_name )
+      `)
+      .or(`slug.ilike.%${keywords}%,title.ilike.%${keywords}%`)
+      .eq('status', 'published')
+      .limit(1);
+    if (fallbackList && fallbackList.length > 0) {
+      article = fallbackList[0];
+    }
+  }
+
+  if (!article) {
     notFound();
   }
 
