@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Script from "next/script";
+
+// ID éditeur AdSense — centralisé via variable d'environnement (fallback = valeur actuelle).
+const ADSENSE_CLIENT =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-8359281173942920";
+
+declare global {
+  interface Window {
+    adsbygoogle?: unknown[];
+  }
+}
 
 export default function AdBanner({
   slotId,
@@ -19,16 +28,14 @@ export default function AdBanner({
   const adRef = useRef<HTMLModElement>(null);
 
   useEffect(() => {
+    // Le script adsbygoogle est chargé UNE seule fois globalement dans le layout.
     try {
-      if (adRef.current) {
-        // Ne push que si l'annonce n'est pas déjà chargée (évite l'erreur "already have ads in them")
-        if (!adRef.current.getAttribute("data-adsbygoogle-status")) {
-          // @ts-ignore
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-        }
+      if (adRef.current && !adRef.current.getAttribute("data-adsbygoogle-status")) {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
       }
-    } catch (err: any) {
-      if (err.message && !err.message.includes("already have ads")) {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "";
+      if (!message.includes("already have ads")) {
         console.error("AdSense error:", err);
       }
     }
@@ -40,17 +47,10 @@ export default function AdBanner({
         ref={adRef}
         className="adsbygoogle"
         style={{ display: "block", width: "100%" }}
-        data-ad-client="ca-pub-8359281173942920"
+        data-ad-client={ADSENSE_CLIENT}
         data-ad-slot={slotId}
         data-ad-format={format}
         data-full-width-responsive={responsive ? "true" : "false"}
-      />
-      <Script
-        id={`adsense-script-${slotId}`}
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8359281173942920"
-        crossOrigin="anonymous"
-        strategy="lazyOnload"
       />
     </div>
   );

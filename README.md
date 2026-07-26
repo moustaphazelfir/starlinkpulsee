@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Starlinkpulsee
 
-## Getting Started
+Blog francophone indépendant dédié à l'internet par satellite **Starlink** (SpaceX) :
+tutoriels, actualités, comparatifs, guides d'équipement. Monétisé via Google AdSense.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Tailwind CSS v4** (palette « Deep Space » centralisée dans `src/app/globals.css`)
+- **Supabase** (PostgreSQL + Auth) pour les articles, catégories, commentaires et analytics
+- Déploiement cible : **Vercel**
+
+## Démarrage
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrir http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variables d'environnement (`.env.local`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+NEXT_PUBLIC_SUPABASE_URL=...          # URL du projet Supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...     # Clé anon Supabase
+NEXT_PUBLIC_SITE_URL=https://starlinkpulsee.com
+NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-XXXXXXXXXXXXXXXX   # optionnel
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX                        # optionnel
+```
 
-## Learn More
+## Base de données
 
-To learn more about Next.js, take a look at the following resources:
+1. Créer un projet Supabase.
+2. Exécuter [`supabase_schema.sql`](supabase_schema.sql) dans **SQL Editor** (schéma complet).
+3. Sur une base déjà en service, appliquer les migrations de [`supabase/migrations/`](supabase/migrations/).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `src/app/` — pages (App Router) : accueil, `blog`, `categories/[slug]`, `admin/*`
+- `src/components/` — Header, Footer, Sidebar, AdBanner, CommentSection…
+- `src/lib/supabase/` — clients Supabase (server / client)
+- `src/lib/site-links.ts` — **source unique** des slugs référencés dans la navigation
+- `src/proxy.ts` — protection des routes `/admin` (ex-`middleware`, renommé en Next 16)
 
-## Deploy on Vercel
+## Administration
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Espace admin protégé sur `/admin` (auth Supabase). Accès discret via l'icône en pied de page.

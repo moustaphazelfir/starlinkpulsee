@@ -13,11 +13,13 @@ Ce projet utilise une esthétique très spécifique appelée "Deep Space Tech" e
 - **Gradients** : Utilisez la classe `.gradient-text` pour mettre en valeur des mots clés importants dans les grands titres.
 
 ## 2. Architecture & Composants
-- **Next.js 14+ (App Router)** : Toujours privilégier les Server Components. Ajoutez `"use client";` au sommet du fichier UNIQUEMENT si le composant nécessite des hooks React (`useState`, `useEffect`, etc.).
+- **Next.js 16 (App Router)** : Toujours privilégier les Server Components. Ajoutez `"use client";` au sommet du fichier UNIQUEMENT si le composant nécessite des hooks React (`useState`, `useEffect`, etc.).
 - **Icônes (Lucide React)** : Utilisez `lucide-react` par défaut. ATTENTION : les icônes de marques (Facebook, Twitter, Youtube, Linkedin) n'existent pas dans Lucide. Elles doivent être créées manuellement en tant que composants SVG.
 - **Publicité (AdSense)** : Ne jamais utiliser directement la balise `<ins class="adsbygoogle">`. TOUJOURS utiliser le wrapper sécurisé `<AdBanner />` pour éviter les crashs React Strict Mode.
 
 ## 3. Base de Données (Supabase)
 - Toutes les opérations de lecture publiques doivent se faire côté Serveur si possible, via `src/lib/supabase/server.ts`.
-- L'Espace Administrateur (`/admin/*`) est protégé par `src/middleware.ts`. Ne jamais exposer de données sensibles en dehors de cette zone.
+- L'Espace Administrateur (`/admin/*`) est protégé par `src/proxy.ts` (convention « proxy » de Next.js 16, ex-`middleware`). Ne jamais exposer de données sensibles en dehors de cette zone.
+- Les slugs d'articles/catégories utilisés dans la navigation viennent de `src/lib/site-links.ts` (source unique). Ne jamais recopier un slug à la main.
+- Les commentaires publics se lisent via la vue `comments_public` (jamais `comments` directement, qui contient les e-mails).
 <!-- END:starlinkpulsee-design-rules -->

@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Paramètres SEO", href: "/admin/settings", icon: Settings },
   ];
 
-  const SidebarContent = () => (
+  const sidebarContent = (
     <>
       <div className="p-6">
         <Link href="/" className="text-[var(--color-accent-cyan)] font-bold tracking-widest uppercase text-sm block mb-8 hover:text-white transition-colors">
@@ -85,7 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-[var(--color-space-900)] flex">
       {/* Desktop Sidebar */}
       <aside className="w-64 bg-[var(--color-space-800)] border-r border-[var(--color-border-subtle)] flex-col hidden md:flex fixed h-full z-10">
-        <SidebarContent />
+        {sidebarContent}
       </aside>
 
       {/* Mobile Header Bar */}
@@ -109,7 +109,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <aside className="md:hidden fixed top-14 left-0 bottom-0 w-72 bg-[var(--color-space-800)] border-r border-[var(--color-border-subtle)] z-50 flex flex-col overflow-y-auto animate-[slideIn_0.2s_ease-out]">
-            <SidebarContent />
+            {sidebarContent}
           </aside>
         </>
       )}

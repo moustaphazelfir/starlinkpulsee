@@ -2,13 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { User, MessageSquare, Reply } from "lucide-react";
+import { MessageSquare, Reply } from "lucide-react";
 
 interface Comment {
   id: string;
   article_id: string;
   author_name: string;
-  author_email: string;
   author_website: string | null;
   content: string;
   parent_id: string | null;
@@ -30,22 +29,22 @@ export default function CommentSection({ articleId }: { articleId: string }) {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Fetch comments
+  // Fetch comments — via la vue publique `comments_public` qui n'expose PAS les e-mails.
   useEffect(() => {
     async function fetchComments() {
-      const { data, error } = await supabase
-        .from('comments')
-        .select('*')
+      const { data } = await supabase
+        .from('comments_public')
+        .select('id, article_id, author_name, author_website, content, parent_id, created_at')
         .eq('article_id', articleId)
         .order('created_at', { ascending: true });
-        
+
       if (data) {
         setComments(data);
       }
       setLoading(false);
     }
     fetchComments();
-  }, [articleId]);
+  }, [articleId, supabase]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,31 +52,36 @@ export default function CommentSection({ articleId }: { articleId: string }) {
     setErrorMsg("");
     setSuccessMsg("");
 
-    const newComment = {
+    // On insère dans la table brute (INSERT autorisé au public), sans relire la ligne :
+    // la RLS ne permet plus au public de lire `comments` (protection des e-mails).
+    const { error } = await supabase.from('comments').insert({
       article_id: articleId,
       author_name: name,
       author_email: email,
       author_website: website || null,
       content,
-      parent_id: replyToId
-    };
-
-    const { data, error } = await supabase
-      .from('comments')
-      .insert(newComment)
-      .select()
-      .single();
+      parent_id: replyToId,
+    });
 
     if (error) {
       setErrorMsg("Une erreur est survenue lors de l'envoi du commentaire.");
-    } else if (data) {
-      setComments([...comments, data]);
+    } else {
+      // Affichage optimiste : on reconstruit le commentaire côté client (sans e-mail).
+      const optimistic: Comment = {
+        id: `local-${Date.now()}`,
+        article_id: articleId,
+        author_name: name,
+        author_website: website || null,
+        content,
+        parent_id: replyToId,
+        created_at: new Date().toISOString(),
+      };
+      setComments([...comments, optimistic]);
       setSuccessMsg("Votre commentaire a été publié !");
       setContent("");
       setReplyToId(null);
-      // We don't reset name/email if user checked "save my info", but for now we just keep it in state.
     }
-    
+
     setIsSubmitting(false);
   };
 

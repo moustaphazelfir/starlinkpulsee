@@ -90,10 +90,19 @@ CREATE POLICY "Admins peuvent gérer les articles" ON public.articles FOR ALL US
 CREATE POLICY "Les profils sont publics" ON public.profiles FOR SELECT USING (true);
 CREATE POLICY "Les utilisateurs peuvent modifier leur propre profil" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
--- Les commentaires sont lisibles par tout le monde, et tout le monde peut insérer un commentaire
-CREATE POLICY "Les commentaires sont publics" ON public.comments FOR SELECT USING (true);
+-- Les commentaires : tout le monde peut en ajouter, mais SEULS les admins peuvent lire
+-- la table brute (qui contient author_email). Le public lit la vue `comments_public`
+-- ci-dessous, qui n'expose pas l'e-mail. (Voir §4 du rapport de sécurité.)
 CREATE POLICY "Tout le monde peut ajouter un commentaire" ON public.comments FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admins peuvent lire les commentaires" ON public.comments FOR SELECT USING (auth.role() = 'authenticated');
 CREATE POLICY "Admins peuvent gérer les commentaires" ON public.comments FOR ALL USING (auth.role() = 'authenticated');
+
+-- Vue publique des commentaires SANS l'adresse e-mail.
+CREATE OR REPLACE VIEW public.comments_public
+WITH (security_invoker = off) AS
+  SELECT id, article_id, author_name, author_website, content, parent_id, created_at
+  FROM public.comments;
+GRANT SELECT ON public.comments_public TO anon, authenticated;
 
 -- 6. Bucket de Stockage (Pour les images des articles)
 INSERT INTO storage.buckets (id, name, public) VALUES ('images', 'images', true);
@@ -112,3 +121,17 @@ CREATE TABLE public.page_views (
 ALTER TABLE public.page_views ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Tout le monde peut ajouter une vue" ON public.page_views FOR INSERT WITH CHECK (true);
 CREATE POLICY "Admins peuvent lire les vues" ON public.page_views FOR SELECT USING (auth.role() = 'authenticated');
+
+-- 8. Fonction d'incrémentation du compteur de vues (SECURITY DEFINER pour contourner
+-- la RLS d'update réservée aux admins, tout en restant sûre — elle ne fait qu'un +1).
+CREATE OR REPLACE FUNCTION public.increment_view_count(article_id UUID)
+RETURNS void
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  UPDATE public.articles
+  SET views = COALESCE(views, 0) + 1
+  WHERE id = article_id;
+$$;
+GRANT EXECUTE ON FUNCTION public.increment_view_count(UUID) TO anon, authenticated;

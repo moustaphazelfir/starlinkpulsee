@@ -16,6 +16,8 @@ const firaCode = Fira_Code({
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://starlinkpulsee.com';
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-8359281173942920';
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-Z4D077646E';
 
 export const metadata: Metadata = {
   title: {
@@ -83,12 +85,12 @@ export default function RootLayout({
     <html lang="fr" className="scroll-smooth">
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8359281173942920" crossOrigin="anonymous"></script>
+        <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`} crossOrigin="anonymous"></script>
       </head>
       <body
         className={`${inter.variable} ${firaCode.variable} antialiased min-h-screen flex flex-col bg-[var(--color-space-800)] text-[var(--color-text-primary)]`}
       >
-        <GoogleAnalytics gaId="G-Z4D077646E" />
+        <GoogleAnalytics gaId={GA_ID} />
         <Header />
         
         {/* AdSense Leaderboard Slot - Toujours visible sous le header sur bureau */}

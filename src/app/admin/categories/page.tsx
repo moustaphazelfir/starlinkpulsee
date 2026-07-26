@@ -29,6 +29,8 @@ export default function AdminCategoriesPage() {
   };
 
   useEffect(() => {
+    // Chargement initial (setState après await : mise à jour asynchrone volontaire).
+    // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
     fetchCategories();
   }, []);
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Plus, Edit2, Trash2, Search, Filter } from "lucide-react";
+import { Plus, Edit2, Filter } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import DeleteArticleButton from "@/components/admin/DeleteArticleButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -8,7 +9,7 @@ export default async function AdminDashboard() {
   const supabase = await createClient();
   
   // Récupérer les articles
-  const { data: articles, error } = await supabase
+  const { data: articles } = await supabase
     .from('articles')
     .select(`
       *,
@@ -128,6 +129,7 @@ export default async function AdminDashboard() {
                       <Link href={`/admin/editor?id=${article.id}`} className="p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-accent-cyan)] bg-[var(--color-space-700)] rounded-lg transition-colors">
                         <Edit2 size={16} />
                       </Link>
+                      <DeleteArticleButton articleId={article.id} title={article.title} />
                     </div>
                   </td>
                 </tr>

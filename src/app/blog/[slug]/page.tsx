@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Calendar, Clock, User, MessageSquare } from "lucide-react";
+import { Calendar, Clock, MessageSquare } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Metadata } from "next";
@@ -27,23 +27,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const supabase = await createClient();
   const rawSlug = resolvedParams.slug;
 
-  let { data: article } = await supabase
+  const { data: article } = await supabase
     .from('articles')
     .select('title, excerpt, featured_image, created_at, profiles ( full_name )')
     .eq('slug', rawSlug)
     .eq('status', 'published')
     .maybeSingle();
-
-  if (!article) {
-    const keywords = rawSlug.split('-').filter(w => w.length > 3).slice(0, 2).join('%');
-    const { data: fallback } = await supabase
-      .from('articles')
-      .select('title, excerpt, featured_image, created_at, profiles ( full_name )')
-      .or(`slug.ilike.%${keywords}%,title.ilike.%${keywords}%`)
-      .eq('status', 'published')
-      .limit(1);
-    if (fallback && fallback.length > 0) article = fallback[0];
-  }
 
   if (!article) {
     return { title: 'Article introuvable — Starlinkpulsee' };
@@ -56,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title,
     description,
-    authors: [{ name: (article.profiles as any)?.full_name || 'Starlinkpulsee' }],
+    authors: [{ name: (article.profiles as { full_name?: string } | null)?.full_name || 'Starlinkpulsee' }],
     openGraph: {
       title: article.title,
       description,
@@ -84,7 +73,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const articleSlug = resolvedParams.slug;
   const supabase = await createClient();
 
-  let { data: article } = await supabase
+  const { data: article } = await supabase
     .from('articles')
     .select(`
       *,
@@ -96,23 +85,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     .maybeSingle();
 
   if (!article) {
-    const keywords = articleSlug.split('-').filter(w => w.length > 3).slice(0, 2).join('%');
-    const { data: fallbackList } = await supabase
-      .from('articles')
-      .select(`
-        *,
-        categories ( name, slug ),
-        profiles ( full_name )
-      `)
-      .or(`slug.ilike.%${keywords}%,title.ilike.%${keywords}%`)
-      .eq('status', 'published')
-      .limit(1);
-    if (fallbackList && fallbackList.length > 0) {
-      article = fallbackList[0];
-    }
-  }
-
-  if (!article) {
     notFound();
   }
 
@@ -120,12 +92,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const words = article.content?.trim().split(/\s+/).length || 0;
   const readTime = Math.ceil(words / 200) || 1;
 
-  // Increment views
-  const { error: rpcError } = await supabase.rpc('increment_view_count', { article_id: article.id });
-  if (rpcError) {
-    // If RPC doesn't exist, fallback to direct update
-    await supabase.from('articles').update({ views: (article.views || 0) + 1 }).eq('id', article.id);
-  }
+  // Incrémenter le compteur de vues via la fonction SECURITY DEFINER (voir migration 0001).
+  await supabase.rpc('increment_view_count', { article_id: article.id });
 
   // Ajouter la vue dans l'historique en temps réel (pour le dashboard admin)
   await supabase.from('page_views').insert([{ article_id: article.id, session_id: 'anonymous-server' }]);
@@ -215,10 +183,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {/* Image mise en avant */}
             <div className="w-full h-[300px] md:h-[500px] rounded-2xl bg-[var(--color-space-700)] relative overflow-hidden mb-12 border border-[var(--color-border-subtle)]">
               {article.featured_image ? (
-                <img src={article.featured_image} alt={article.title} className="absolute inset-0 w-full h-full object-cover" />
+                <Image
+                  src={article.featured_image}
+                  alt={article.title}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 75vw"
+                  className="object-cover"
+                />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center text-[var(--color-text-muted)] text-xl">
-                  [Image de couverture]
+                  Image de couverture
                 </div>
               )}
             </div>

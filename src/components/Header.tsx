@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { Search, Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  ARTICLE_SLUGS,
+  CATEGORY_SLUGS,
+  articleHref,
+  categoryHref,
+} from "@/lib/site-links";
 
 const Facebook = ({size = 16}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>;
 const Twitter = ({size = 16}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>;
@@ -11,51 +17,61 @@ const Youtube = ({size = 16}) => <svg width={size} height={size} viewBox="0 0 24
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
 
   if (pathname?.startsWith("/admin")) return null;
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (!q) return;
+    setIsMenuOpen(false);
+    router.push(`/blog?q=${encodeURIComponent(q)}`);
+  };
 
   const navigation = [
     { name: "Accueil", href: "/" },
     {
       name: "Guides",
-      href: "/categories/tutoriels",
+      href: categoryHref(CATEGORY_SLUGS.tutoriels),
       items: [
-        { name: "Guide complet Starlink", href: "/blog/guide-complet-starlink-c-est-quoi-l-internet-par-satellite-de-spacex" },
-        { name: "Installation & Config", href: "/blog/comment-installer-starlink-etape-par-etape-guide-complet" },
-        { name: "Tous les Tutoriels", href: "/categories/tutoriels" },
+        { name: "Guide complet Starlink", href: articleHref(ARTICLE_SLUGS.guideComplet) },
+        { name: "Installation & Config", href: articleHref(ARTICLE_SLUGS.installation) },
+        { name: "Tous les tutoriels", href: categoryHref(CATEGORY_SLUGS.tutoriels) },
       ],
     },
     {
       name: "Prix & Forfaits",
-      href: "/categories/prix-forfaits",
+      href: articleHref(ARTICLE_SLUGS.prix),
       items: [
-        { name: "Tarifs Starlink 2026", href: "/blog/prix-starlink-en-france-le-guide-complet-sur-les-offres-couts-et-abonnements" },
-        { name: "Quel Forfait Choisir ?", href: "/blog/forfait-starlink-residentiel-100-200-ou-max-lequel-choisir" },
-        { name: "Promotion en Cours", href: "/blog/starlink-casse-ses-prix-en-france-internet-par-satellite-a-10-mois-bonne-affaire-ou-piege" },
+        { name: "Tarifs Starlink 2026", href: articleHref(ARTICLE_SLUGS.prix) },
+        { name: "Quel forfait choisir ?", href: articleHref(ARTICLE_SLUGS.forfaits) },
+        { name: "Promotion en cours", href: articleHref(ARTICLE_SLUGS.promo) },
       ],
     },
     {
       name: "Comparatifs",
-      href: "/categories/comparatifs",
+      href: categoryHref(CATEGORY_SLUGS.comparatifs),
       items: [
-        { name: "Starlink vs Fibre", href: "/blog/starlink-vs-fibre-optique-quel-choix-pour-votre-connexion-internet" },
-        { name: "Starlink vs 4G/5G", href: "/blog/starlink-vs-4g-5g-quelle-solution-pour-votre-connexion-internet" },
-        { name: "Starlink vs ADSL", href: "/blog/starlink-vs-adsl-le-match-a-sens-unique" },
-        { name: "Tous les Comparatifs", href: "/categories/comparatifs" },
+        { name: "Starlink vs Fibre", href: articleHref(ARTICLE_SLUGS.vsFibre) },
+        { name: "Starlink vs 4G/5G", href: articleHref(ARTICLE_SLUGS.vs4g5g) },
+        { name: "Starlink vs ADSL", href: articleHref(ARTICLE_SLUGS.vsAdsl) },
+        { name: "Tous les comparatifs", href: categoryHref(CATEGORY_SLUGS.comparatifs) },
       ],
     },
     {
       name: "Équipements",
-      href: "/categories/equipements",
+      href: categoryHref(CATEGORY_SLUGS.equipements),
       items: [
-        { name: "Supports & Mâts", href: "/blog/support-starlink-guide-complet-des-fixations-officielles-et-tierces" },
-        { name: "Box TV pour Starlink", href: "/blog/quelle-box-tv-avec-starlink-5-solutions-incontournables-en-2026" },
-        { name: "Meilleurs Routeurs", href: "/blog/top-5-des-meilleurs-routeurs-wi-fi-tiers-a-utiliser-avec-starlink" },
+        { name: "Supports & mâts", href: articleHref(ARTICLE_SLUGS.support) },
+        { name: "Box TV pour Starlink", href: articleHref(ARTICLE_SLUGS.boxTv) },
+        { name: "Meilleurs routeurs", href: articleHref(ARTICLE_SLUGS.routeurs) },
       ],
     },
-    { name: "Actualités", href: "/categories/actualites" },
+    { name: "Actualités", href: categoryHref(CATEGORY_SLUGS.actualites) },
     { name: "Tous les articles", href: "/blog" },
   ];
 
@@ -85,16 +101,19 @@ export default function Header() {
           </div>
           
           <div className="flex items-center">
-            <div className="relative">
+            <form onSubmit={handleSearch} className="relative" role="search">
               <input
-                type="text"
-                placeholder="Rechercher..."
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Rechercher un article…"
+                aria-label="Rechercher un article"
                 className="h-8 rounded-full border border-[var(--color-border-subtle)] bg-transparent pl-4 pr-10 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent-cyan)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-cyan)]"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] hover:text-[var(--color-accent-cyan)]">
+              <button type="submit" aria-label="Lancer la recherche" className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] hover:text-[var(--color-accent-cyan)]">
                 <Search size={14} />
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -165,16 +184,19 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-[var(--color-border-subtle)]">
             <div className="mb-4 px-2">
-               <div className="relative">
+               <form onSubmit={handleSearch} className="relative" role="search">
                   <input
-                    type="text"
-                    placeholder="Rechercher..."
+                    type="search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Rechercher un article…"
+                    aria-label="Rechercher un article"
                     className="w-full h-10 rounded-full border border-[var(--color-border-subtle)] bg-[var(--color-space-700)] pl-4 pr-10 text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none"
                   />
-                  <button className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]">
+                  <button type="submit" aria-label="Lancer la recherche" className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]">
                     <Search size={18} />
                   </button>
-                </div>
+                </form>
             </div>
             
             <nav className="flex flex-col space-y-1">

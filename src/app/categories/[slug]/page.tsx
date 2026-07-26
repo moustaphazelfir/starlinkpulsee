@@ -1,8 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Calendar } from "lucide-react";
+import { ArrowRight, Calendar, Satellite } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import { articleHref } from "@/lib/site-links";
 import type { Metadata } from "next";
 
 export const dynamic = 'force-dynamic';
@@ -69,7 +71,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   }
 
   // Fetch articles for this category
-  const { data: articles, error: artError } = await supabase
+  const { data: articles } = await supabase
     .from('articles')
     .select(`
       id, title, slug, excerpt, created_at, featured_image,
@@ -79,7 +81,16 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     .eq('status', 'published')
     .order('created_at', { ascending: false });
 
-  const categoryArticles = articles || [];
+  type CategoryArticle = {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    created_at: string;
+    featured_image: string | null;
+    profiles: { full_name: string } | null;
+  };
+  const categoryArticles = (articles as unknown as CategoryArticle[]) || [];
 
   return (
     <div className="min-h-screen bg-[var(--color-space-800)] pt-8 pb-16">
@@ -108,14 +119,22 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             </header>
 
             <div className="space-y-8">
-              {categoryArticles.map((article: any) => (
+              {categoryArticles.map((article) => (
                 <article key={article.id} className="glass rounded-xl overflow-hidden group hover:border-[var(--color-border-medium)] transition-all flex flex-col md:flex-row">
                   {/* Image */}
-                  <Link href={`/blog/${article.slug}`} className="block w-full md:w-1/3 h-48 md:h-auto bg-[var(--color-space-600)] relative overflow-hidden flex-shrink-0">
+                  <Link href={articleHref(article.slug)} className="block w-full md:w-1/3 h-48 md:h-auto min-h-[12rem] bg-[var(--color-space-600)] relative overflow-hidden flex-shrink-0">
                     {article.featured_image ? (
-                      <img src={article.featured_image} alt={article.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <Image
+                        src={article.featured_image}
+                        alt={article.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-white/20">Sans Image</div>
+                      <div className="absolute inset-0 flex items-center justify-center text-white/20">
+                        <Satellite size={32} />
+                      </div>
                     )}
                   </Link>
                   

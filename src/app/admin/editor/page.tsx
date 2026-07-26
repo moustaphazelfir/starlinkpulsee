@@ -48,20 +48,21 @@ function AdminEditor() {
   // Fetch categories on mount
   useEffect(() => {
     async function fetchCategories() {
-      const { data, error } = await supabase.from('categories').select('*');
+      const { data } = await supabase.from('categories').select('*');
       if (data) {
         setCategories(data);
         if (data.length > 0 && !categoryId) setCategoryId(data[0].id);
       }
     }
     fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch article if editing
   useEffect(() => {
     async function fetchArticle() {
       if (!articleId) return;
-      const { data, error } = await supabase.from('articles').select('*').eq('id', articleId).single();
+      const { data } = await supabase.from('articles').select('*').eq('id', articleId).single();
       if (data) {
         setTitle(data.title || "");
         setSlug(data.slug || "");
@@ -72,18 +73,22 @@ function AdminEditor() {
       }
     }
     fetchArticle();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [articleId]);
 
-  // Auto-generate slug (only if creating new)
-  useEffect(() => {
-    if (articleId) return; // Don't auto-generate if editing
-    const generatedSlug = title
+  // G\u00e9n\u00e8re un slug SEO \u00e0 partir d'un titre.
+  const slugify = (value: string) =>
+    value
       .toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove accents
-      .replace(/[^a-z0-9]+/g, "-") // Replace non-alphanumeric with dash
-      .replace(/(^-|-$)+/g, ""); // Remove leading/trailing dash
-    setSlug(generatedSlug);
-  }, [title]);
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Enl\u00e8ve les accents
+      .replace(/[^a-z0-9]+/g, "-") // Non-alphanum\u00e9rique -> tiret
+      .replace(/(^-|-$)+/g, ""); // Tirets en d\u00e9but/fin
+
+  // Met \u00e0 jour le titre (et le slug tant qu'on cr\u00e9e un nouvel article).
+  const handleTitleChange = (value: string) => {
+    setTitle(value);
+    if (!articleId) setSlug(slugify(value));
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -118,9 +123,9 @@ function AdminEditor() {
       const imageMarkdown = `\n\n![Image](${publicUrl})\n\n`;
       setContent((prev) => prev + imageMarkdown);
 
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setError(err.message || "Erreur lors de l'upload de l'image.");
+      setError(err instanceof Error ? err.message : "Erreur lors de l'upload de l'image.");
     } finally {
       setIsUploadingInline(false);
       // Réinitialiser l'input pour pouvoir uploader la même image si besoin
@@ -161,7 +166,16 @@ function AdminEditor() {
       const finalExcerpt = excerpt || content.substring(0, 150) + "...";
 
       // 3. Insérer ou Mettre à jour dans la base de données
-      const articleData = {
+      const articleData: {
+        title: string;
+        slug: string;
+        category_id: string;
+        author_id: string;
+        content: string;
+        excerpt: string;
+        status: 'draft' | 'published';
+        featured_image?: string;
+      } = {
         title,
         slug,
         category_id: categoryId,
@@ -170,9 +184,9 @@ function AdminEditor() {
         excerpt: finalExcerpt,
         status
       };
-      
+
       if (featured_image) {
-        (articleData as any).featured_image = featured_image;
+        articleData.featured_image = featured_image;
       }
 
       let saveError;
@@ -194,9 +208,9 @@ function AdminEditor() {
         router.push("/admin");
       }, 2000);
 
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setError(err.message || "Une erreur inattendue est survenue.");
+      setError(err instanceof Error ? err.message : "Une erreur inattendue est survenue.");
     } finally {
       setLoading(false);
     }
@@ -232,7 +246,7 @@ function AdminEditor() {
               type="text" 
               required
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => handleTitleChange(e.target.value)}
               className="w-full bg-[var(--color-space-900)] border border-[var(--color-border-subtle)] rounded-xl py-3 px-4 text-white font-bold text-lg focus:outline-none focus:border-[var(--color-accent-cyan)] transition-colors"
               placeholder="Ex: Starlink lance un nouveau forfait..."
             />
@@ -276,7 +290,9 @@ function AdminEditor() {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
             />
             {imagePreview ? (
-              <img src={imagePreview} alt="Preview" className="absolute inset-0 w-full h-full object-cover rounded-xl opacity-50" />
+              // Aperçu d'un fichier local (blob) ou d'une URL distante : next/image inadapté ici.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={imagePreview} alt="Aperçu de l'image de couverture" className="absolute inset-0 w-full h-full object-cover rounded-xl opacity-50" />
             ) : (
               <>
                 <div className="w-12 h-12 bg-[var(--color-space-800)] rounded-full flex items-center justify-center mb-3 text-[var(--color-text-secondary)]">

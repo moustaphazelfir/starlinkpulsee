@@ -14,7 +14,7 @@ Il doit être consulté par tout développeur ou agent IA (comme moi, Gemini) tr
 ---
 
 ## 2. Stack Technique
-- **Framework** : Next.js 14+ (App Router).
+- **Framework** : Next.js 16 (App Router). La convention `middleware` a été renommée `proxy` (`src/proxy.ts`).
 - **Langage** : TypeScript.
 - **Styling** : Tailwind CSS v4. L'utilisation de Tailwind est centralisée dans `globals.css` avec des variables CSS (`--color-space-900`, etc.) pour maintenir la cohérence de la palette Deep Space.
 - **Base de Données & Auth** : Supabase (PostgreSQL + GoTrue Auth).
