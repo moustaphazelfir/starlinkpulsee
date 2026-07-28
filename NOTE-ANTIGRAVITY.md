@@ -1,13 +1,15 @@
 # Note pour Antigravity
 
-**Un commit a été réalisé sur ordre explicite de l'utilisateur (propriétaire du dépôt).**
+**Toutes les opérations ci-dessous ont été réalisées sur ordre explicite de l'utilisateur (propriétaire du dépôt).**
 
-- **Auteur de l'opération** : Claude Code (Anthropic), agissant sur instruction directe de l'utilisateur.
-- **Branche** : `refonte-complete`
-- **Commit** : `3f78aa3` — _refonte: correctifs securite/qualite + redesign landing + nettoyage data_
+- **Auteur des opérations** : Claude Code (Anthropic), sur instruction directe de l'utilisateur.
 - **Date** : 2026-07-26
+- **Branche finale** : `main` (déjà poussée sur `origin/main`)
 
-## Contenu du commit
+## Journal
+
+### 1. Commit de refonte — `3f78aa3`
+_refonte: correctifs securite/qualite + redesign landing + nettoyage data_
 
 Correctifs (détaillés dans [RAPPORT-INCOHERENCES.md](RAPPORT-INCOHERENCES.md)) :
 - Slugs centralisés dans `src/lib/site-links.ts` (fin des 404) ; fallback flou supprimé.
@@ -20,9 +22,19 @@ Correctifs (détaillés dans [RAPPORT-INCOHERENCES.md](RAPPORT-INCOHERENCES.md))
 - Suppression d'article dans l'admin ; ESLint 59 erreurs → 0 ; docs à jour.
 - Redesign de la landing page (hero orbital, bandeau specs, `next/image`).
 
-## Actions restantes (côté humain)
+### 2. Note initiale — `1738f1b`
+Ajout de ce fichier de trace.
 
-1. Exécuter `supabase/migrations/0001_security_and_views.sql` dans Supabase → SQL Editor.
-2. Le contenu des articles a aussi été nettoyé directement en base (titres, H1, extraits).
+### 3. Fusion + déploiement
+- La branche `refonte-complete` a été **fusionnée dans `main`** puis supprimée.
+- `main` est **synchronisé avec `origin/main`** (GitHub) → déclenche le déploiement Vercel.
 
-_Ce fichier sert uniquement de trace d'information dans le dépôt ; aucune action automatique n'est attendue d'Antigravity._
+### 4. Réécriture des articles (contenu Supabase, hors dépôt Git)
+- Les **13 articles publiés** ont été **entièrement reformulés** pour être uniques et d'aspect naturel.
+- **Faits, chiffres et URLs d'images préservés à l'identique** (contrôle automatique avant chaque écriture).
+- Sauvegarde complète de l'état d'origine conservée hors dépôt (rollback possible).
+
+### 5. Base de données
+- Migration `supabase/migrations/0001_security_and_views.sql` **exécutée par l'utilisateur** (fuite d'e-mails corrigée + compteur de vues).
+
+_Ce fichier est une simple trace d'information dans le dépôt. Aucune action automatique n'est attendue d'Antigravity, et aucun canal de notification direct n'existe entre Claude Code et Antigravity._
