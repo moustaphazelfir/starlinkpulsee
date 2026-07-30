@@ -35,7 +35,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <>
       <div className="p-6">
         <Link href="/" className="text-[var(--color-accent-cyan)] font-bold tracking-widest uppercase text-sm block mb-8 hover:text-white transition-colors">
-          STARLINKPULSEE
+          STARLINK ULTRA
         </Link>
         <div className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider font-bold mb-4">Admin Panel</div>
         <nav className="space-y-2">
@@ -91,7 +91,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Header Bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[var(--color-space-800)] border-b border-[var(--color-border-subtle)] flex items-center justify-between px-4 h-14">
         <Link href="/" className="text-[var(--color-accent-cyan)] font-bold tracking-widest uppercase text-xs">
-          STARLINKPULSEE
+          STARLINK ULTRA
         </Link>
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

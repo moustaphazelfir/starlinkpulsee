@@ -21,26 +21,47 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-Z4D077646E';
 
 export const metadata: Metadata = {
   title: {
-    default: "Starlinkpulsee — Votre guide indépendant Starlink",
+    default: "Starlink Ultra — Votre guide indépendant Starlink",
     template: "%s",
   },
   description: "La référence francophone Starlink : tutoriels, actualités, comparatifs et guides complets pour optimiser votre connexion internet par satellite SpaceX.",
-  keywords: ["Starlink", "Internet par satellite", "SpaceX", "Tutoriels Starlink", "Abonnement Starlink", "Starlink France", "Starlink prix", "Starlink avis"],
-  authors: [{ name: "Starlinkpulsee" }],
-  creator: "Starlinkpulsee",
-  publisher: "Starlinkpulsee",
+  keywords: [
+    // Marque & générique
+    "Starlink", "Starlink Ultra", "internet par satellite", "SpaceX", "internet satellite Starlink",
+    // Prix / forfaits (fort volume de recherche)
+    "prix Starlink", "Starlink prix 2026", "abonnement Starlink", "forfait Starlink",
+    "forfait Starlink résidentiel", "Starlink 100 200 MAX", "Starlink pas cher", "promo Starlink",
+    // Matériel
+    "kit Starlink", "antenne Starlink", "Starlink Mini", "Starlink Standard V4",
+    "support Starlink", "routeur Starlink", "box TV Starlink",
+    // Installation / usage
+    "installer Starlink", "installation Starlink", "améliorer débit Starlink", "réduire ping Starlink",
+    "Starlink obstruction", "mode Bypass Starlink",
+    // Comparatifs
+    "Starlink vs fibre", "Starlink vs 4G 5G", "Starlink vs ADSL", "comparatif Starlink",
+    // Cas d'usage / zones
+    "internet zone blanche", "internet campagne", "internet rural", "internet camping-car",
+    // Géographie francophone
+    "Starlink France", "Starlink Belgique", "Starlink Suisse", "Starlink Afrique",
+    "Starlink Côte d'Ivoire", "Starlink Sénégal",
+    // Décision
+    "Starlink avis", "test Starlink", "débit Starlink", "latence Starlink",
+  ],
+  authors: [{ name: "Starlink Ultra" }],
+  creator: "Starlink Ultra",
+  publisher: "Starlink Ultra",
   metadataBase: new URL(SITE_URL),
   openGraph: {
-    title: "Starlinkpulsee — Votre guide indépendant Starlink",
+    title: "Starlink Ultra — Votre guide indépendant Starlink",
     description: "La référence francophone Starlink : tutoriels, actualités, comparatifs et guides complets pour optimiser votre connexion internet par satellite SpaceX.",
     url: SITE_URL,
-    siteName: "Starlinkpulsee",
+    siteName: "Starlink Ultra",
     locale: "fr_FR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Starlinkpulsee — Votre guide indépendant Starlink",
+    title: "Starlink Ultra — Votre guide indépendant Starlink",
     description: "La référence francophone Starlink : tutoriels, actualités, comparatifs et guides complets.",
   },
   robots: {
@@ -70,13 +91,13 @@ export default function RootLayout({
   const websiteJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Starlinkpulsee',
+    name: 'Starlink Ultra',
     url: SITE_URL,
     description: 'La référence francophone Starlink : tutoriels, actualités, comparatifs et guides complets.',
     inLanguage: 'fr-FR',
     publisher: {
       '@type': 'Organization',
-      name: 'Starlinkpulsee',
+      name: 'Starlink Ultra',
       url: SITE_URL,
     },
   };

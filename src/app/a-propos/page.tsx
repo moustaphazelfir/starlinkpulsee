@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ArrowRight, Satellite, Users, Target, Heart } from "lucide-react";
 
 export const metadata = {
-  title: "À propos - Starlinkpulsee",
-  description: "Découvrez qui se cache derrière Starlinkpulsee, le guide francophone indépendant dédié à Starlink et l'internet par satellite.",
+  title: "À propos - Starlink Ultra",
+  description: "Découvrez qui se cache derrière Starlink Ultra, le guide francophone indépendant dédié à Starlink et l'internet par satellite.",
 };
 
 export default function AboutPage() {
@@ -20,7 +20,7 @@ export default function AboutPage() {
 
         <header className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6">
-            À propos de <span className="gradient-text">Starlinkpulsee</span>
+            À propos de <span className="gradient-text">Starlink Ultra</span>
           </h1>
           <p className="text-lg md:text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto">
             Le guide francophone indépendant pour tout savoir sur l'internet par satellite Starlink de SpaceX.
@@ -36,7 +36,7 @@ export default function AboutPage() {
             <h2 className="text-2xl font-bold text-white">Notre Mission</h2>
           </div>
           <p className="text-[var(--color-text-secondary)] text-lg leading-relaxed mb-4">
-            Starlinkpulsee a été créé avec un objectif simple : <strong className="text-white">démocratiser l'accès à l'information sur Starlink</strong> pour la communauté francophone.
+            Starlink Ultra a été créé avec un objectif simple : <strong className="text-white">démocratiser l'accès à l'information sur Starlink</strong> pour la communauté francophone.
           </p>
           <p className="text-[var(--color-text-secondary)] text-lg leading-relaxed">
             Que vous soyez dans une zone blanche ADSL, un voyageur en van, un marin, ou simplement curieux de cette technologie révolutionnaire de SpaceX, nous décortiquons chaque mise à jour, chaque offre et chaque équipement pour vous aider à prendre les meilleures décisions.
@@ -82,7 +82,7 @@ export default function AboutPage() {
             </div>
           </div>
           <p className="text-[var(--color-text-secondary)] text-lg leading-relaxed">
-            Passionné de technologie et utilisateur de Starlink depuis ses débuts, j'ai créé Starlinkpulsee pour partager mon expérience et aider la communauté francophone à maîtriser l'internet par satellite. Chaque article est rédigé avec soin, basé sur des tests réels et une veille technologique constante.
+            Passionné de technologie et utilisateur de Starlink depuis ses débuts, j'ai créé Starlink Ultra pour partager mon expérience et aider la communauté francophone à maîtriser l'internet par satellite. Chaque article est rédigé avec soin, basé sur des tests réels et une veille technologique constante.
           </p>
         </section>
 

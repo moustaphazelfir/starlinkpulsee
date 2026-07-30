@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Mentions Légales - Starlinkpulsee",
-  description: "Mentions légales du site Starlinkpulsee, guide indépendant sur Starlink.",
+  title: "Mentions Légales - Starlink Ultra",
+  description: "Mentions légales du site Starlink Ultra, guide indépendant sur Starlink.",
 };
 
 export default function MentionsLegalesPage() {
@@ -56,7 +56,7 @@ export default function MentionsLegalesPage() {
           <section>
             <h2>5. Liens externes</h2>
             <p>
-              Starlinkpulsee peut contenir des liens vers d'autres sites. L'éditeur n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.
+              Starlink Ultra peut contenir des liens vers d'autres sites. L'éditeur n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.
             </p>
           </section>
 

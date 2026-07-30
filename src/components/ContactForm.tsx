@@ -16,7 +16,7 @@ export default function ContactForm() {
     // Sans backend d'envoi, on ouvre le client mail de l'utilisateur pré-rempli.
     const body = `Nom : ${name}\nE-mail : ${email}\n\n${message}`;
     const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-      `[Starlinkpulsee] ${subject}`
+      `[Starlink Ultra] ${subject}`
     )}&body=${encodeURIComponent(body)}`;
     window.location.href = mailto;
   };

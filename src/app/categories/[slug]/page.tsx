@@ -25,11 +25,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     .single();
 
   if (!category) {
-    return { title: 'Catégorie introuvable — Starlinkpulsee' };
+    return { title: 'Catégorie introuvable — Starlink Ultra' };
   }
 
-  const title = `${category.name} — Starlinkpulsee`;
-  const description = `Retrouvez tous nos articles, guides et tests liés à la thématique "${category.name}" sur Starlinkpulsee.`;
+  const title = `${category.name} — Starlink Ultra`;
+  const description = `Retrouvez tous nos articles, guides et tests liés à la thématique "${category.name}" sur Starlink Ultra.`;
 
   return {
     title,
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title,
       description,
       url: `${SITE_URL}/categories/${category.slug}`,
-      siteName: 'Starlinkpulsee',
+      siteName: 'Starlink Ultra',
       locale: 'fr_FR',
       type: 'website',
     },

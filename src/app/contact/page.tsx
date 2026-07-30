@@ -2,8 +2,8 @@ import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 
 export const metadata = {
-  title: "Contact - Starlinkpulsee",
-  description: "Contactez l'équipe Starlinkpulsee pour toute question sur Starlink, suggestion d'article ou partenariat.",
+  title: "Contact - Starlink Ultra",
+  description: "Contactez l'équipe Starlink Ultra pour toute question sur Starlink, suggestion d'article ou partenariat.",
 };
 
 export default function ContactPage() {

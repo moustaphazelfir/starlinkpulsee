@@ -16,7 +16,7 @@ export default function Footer() {
           {/* Colonne 1: À propos */}
           <div className="col-span-1 md:col-span-2">
             <span className="text-[var(--color-accent-cyan)] font-bold tracking-[0.2em] uppercase text-sm mb-4 block">
-              Starlink Pulse
+              Starlink Ultra
             </span>
             <p className="text-[var(--color-text-secondary)] mb-6 max-w-md">
               Votre guide francophone indépendant sur l'internet par satellite. Nous vous aidons à choisir, installer et optimiser votre équipement Starlink.
@@ -47,7 +47,7 @@ export default function Footer() {
 
         <div className="border-t border-[var(--color-border-subtle)] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[var(--color-text-muted)] text-sm">
-            © {new Date().getFullYear()} Starlinkpulsee. Tous droits réservés. Ce site n'est pas affilié à SpaceX.
+            © {new Date().getFullYear()} Starlink Ultra. Tous droits réservés. Ce site n'est pas affilié à SpaceX.
           </p>
           
           {/* BOUTON ADMIN DISSIMULÉ */}

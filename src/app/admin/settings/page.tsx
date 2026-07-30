@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Save, Settings, CheckCircle, Globe, FileText, Tag } from "lucide-react";
 
 export default function AdminSettingsPage() {
-  const [siteTitle, setSiteTitle] = useState("Starlinkpulsee - Votre guide indépendant Starlink");
+  const [siteTitle, setSiteTitle] = useState("Starlink Ultra - Votre guide indépendant Starlink");
   const [siteDescription, setSiteDescription] = useState("La référence francophone Starlink : tutoriels, actualités, comparatifs et guides complets pour optimiser votre connexion par satellite.");
   const [siteKeywords, setSiteKeywords] = useState("Starlink, Internet par satellite, SpaceX, Tutoriels Starlink, Abonnement Starlink, Forfait Starlink, Antenne Starlink");
   const [adsenseId, setAdsenseId] = useState("");

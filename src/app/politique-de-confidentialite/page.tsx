@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Politique de Confidentialité - Starlinkpulsee",
-  description: "Politique de confidentialité et gestion des données personnelles sur Starlinkpulsee.",
+  title: "Politique de Confidentialité - Starlink Ultra",
+  description: "Politique de confidentialité et gestion des données personnelles sur Starlink Ultra.",
 };
 
 export default function PolitiqueConfidentialitePage() {
@@ -24,7 +24,7 @@ export default function PolitiqueConfidentialitePage() {
           <section>
             <h2>1. Introduction</h2>
             <p>
-              La protection de vos données personnelles est une priorité pour Starlinkpulsee. Cette politique de confidentialité explique quelles données nous collectons, comment nous les utilisons et quels sont vos droits.
+              La protection de vos données personnelles est une priorité pour Starlink Ultra. Cette politique de confidentialité explique quelles données nous collectons, comment nous les utilisons et quels sont vos droits.
             </p>
           </section>
 

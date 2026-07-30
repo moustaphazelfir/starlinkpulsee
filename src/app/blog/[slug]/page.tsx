@@ -35,22 +35,22 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     .maybeSingle();
 
   if (!article) {
-    return { title: 'Article introuvable — Starlinkpulsee' };
+    return { title: 'Article introuvable — Starlink Ultra' };
   }
 
-  const title = `${article.title} — Starlinkpulsee`;
-  const description = article.excerpt || `Lisez "${article.title}" sur Starlinkpulsee, votre guide francophone Starlink.`;
+  const title = `${article.title} — Starlink Ultra`;
+  const description = article.excerpt || `Lisez "${article.title}" sur Starlink Ultra, votre guide francophone Starlink.`;
   const imageUrl = article.featured_image || `${SITE_URL}/images/og-default.png`;
 
   return {
     title,
     description,
-    authors: [{ name: (article.profiles as { full_name?: string } | null)?.full_name || 'Starlinkpulsee' }],
+    authors: [{ name: (article.profiles as { full_name?: string } | null)?.full_name || 'Starlink Ultra' }],
     openGraph: {
       title: article.title,
       description,
       url: `${SITE_URL}/blog/${rawSlug}`,
-      siteName: 'Starlinkpulsee',
+      siteName: 'Starlink Ultra',
       images: [{ url: imageUrl, width: 1200, height: 630, alt: article.title }],
       locale: 'fr_FR',
       type: 'article',
@@ -109,11 +109,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     dateModified: article.updated_at || article.created_at,
     author: {
       '@type': 'Person',
-      name: article.profiles?.full_name || 'Starlinkpulsee',
+      name: article.profiles?.full_name || 'Starlink Ultra',
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Starlinkpulsee',
+      name: 'Starlink Ultra',
       url: SITE_URL,
     },
     mainEntityOfPage: {

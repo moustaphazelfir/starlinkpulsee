@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
             <ShieldCheck size={32} className="text-[var(--color-accent-cyan)]" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Espace Administrateur</h1>
-          <p className="text-[var(--color-text-secondary)] text-sm">Veuillez vous identifier pour accéder au tableau de bord Starlinkpulsee.</p>
+          <p className="text-[var(--color-text-secondary)] text-sm">Veuillez vous identifier pour accéder au tableau de bord Starlink Ultra.</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
