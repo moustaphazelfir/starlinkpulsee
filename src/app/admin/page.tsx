@@ -27,12 +27,21 @@ export default async function AdminDashboard() {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
   const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1).toISOString();
   const fiveMinutesAgo = new Date(now.getTime() - 5 * 60000).toISOString();
+  const since24h = new Date(now.getTime() - 24 * 3600 * 1000).toISOString();
 
   // Requêtes pour les statistiques en temps réel
-  const [{ count: viewsToday }, { count: viewsYesterday }, { count: viewsLive }] = await Promise.all([
+  const [
+    { count: viewsToday },
+    { count: viewsYesterday },
+    { count: viewsLive },
+    { count: commentsTotal },
+    { count: commentsNew },
+  ] = await Promise.all([
     supabase.from('page_views').select('*', { count: 'exact', head: true }).gte('created_at', today),
     supabase.from('page_views').select('*', { count: 'exact', head: true }).gte('created_at', yesterday).lt('created_at', today),
-    supabase.from('page_views').select('*', { count: 'exact', head: true }).gte('created_at', fiveMinutesAgo)
+    supabase.from('page_views').select('*', { count: 'exact', head: true }).gte('created_at', fiveMinutesAgo),
+    supabase.from('comments').select('*', { count: 'exact', head: true }),
+    supabase.from('comments').select('*', { count: 'exact', head: true }).gte('created_at', since24h),
   ]);
 
   return (
@@ -75,7 +84,7 @@ export default async function AdminDashboard() {
 
       {/* Gestion de Contenu */}
       <h2 className="text-xl font-bold text-white mb-4">Gestion de Contenu</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="glass p-5 rounded-xl border border-[var(--color-border-subtle)] flex justify-between items-center">
           <span className="text-[var(--color-text-secondary)] font-medium">Articles publiés</span>
           <span className="text-2xl font-bold text-white">{publishedCount}</span>
@@ -84,6 +93,18 @@ export default async function AdminDashboard() {
           <span className="text-[var(--color-text-secondary)] font-medium">Brouillons</span>
           <span className="text-2xl font-bold text-orange-400">{draftsCount}</span>
         </div>
+        <Link
+          href="/admin/comments"
+          className="glass p-5 rounded-xl border border-[var(--color-border-subtle)] hover:border-[var(--color-accent-cyan)] transition-colors flex justify-between items-center group"
+        >
+          <span className="text-[var(--color-text-secondary)] font-medium group-hover:text-white transition-colors">
+            Commentaires
+            {(commentsNew || 0) > 0 && (
+              <span className="ml-2 text-xs font-bold text-green-400">+{commentsNew} récents</span>
+            )}
+          </span>
+          <span className="text-2xl font-bold text-[var(--color-accent-cyan)]">{commentsTotal || 0}</span>
+        </Link>
       </div>
 
       {/* Liste des articles */}
