@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, FileText, FolderTree, MessageSquare, Settings, LogOut, Menu, X, Home } from "lucide-react";
+import { LayoutDashboard, FileText, FolderTree, MessageSquare, TrendingUp, Settings, LogOut, Menu, X, Home } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -29,6 +29,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Nouvel Article", href: "/admin/editor", icon: FileText },
     { name: "Catégories", href: "/admin/categories", icon: FolderTree },
     { name: "Commentaires", href: "/admin/comments", icon: MessageSquare },
+    { name: "Statistiques", href: "/admin/stats", icon: TrendingUp },
     { name: "Paramètres SEO", href: "/admin/settings", icon: Settings },
   ];
 

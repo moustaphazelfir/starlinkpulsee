@@ -115,8 +115,10 @@ CREATE TABLE public.page_views (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     article_id UUID REFERENCES public.articles(id) ON DELETE CASCADE,
     session_id VARCHAR(255),
+    country TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+CREATE INDEX IF NOT EXISTS page_views_created_at_idx ON public.page_views (created_at);
 
 ALTER TABLE public.page_views ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Tout le monde peut ajouter une vue" ON public.page_views FOR INSERT WITH CHECK (true);
@@ -135,3 +137,29 @@ AS $$
   WHERE id = article_id;
 $$;
 GRANT EXECUTE ON FUNCTION public.increment_view_count(UUID) TO anon, authenticated;
+
+-- 9. Fonctions d'agrégation pour les statistiques admin (courbes + pays).
+CREATE OR REPLACE FUNCTION public.views_daily(days INT DEFAULT 30)
+RETURNS TABLE(jour DATE, vues BIGINT) LANGUAGE sql STABLE AS $$
+  SELECT g.d::date, count(pv.id)
+  FROM generate_series((current_date - (days - 1)), current_date, interval '1 day') g(d)
+  LEFT JOIN public.page_views pv ON pv.created_at::date = g.d::date
+  GROUP BY g.d ORDER BY g.d;
+$$;
+CREATE OR REPLACE FUNCTION public.views_monthly(months INT DEFAULT 12)
+RETURNS TABLE(mois DATE, vues BIGINT) LANGUAGE sql STABLE AS $$
+  SELECT g.d::date, count(pv.id)
+  FROM generate_series(date_trunc('month', current_date) - ((months - 1) || ' months')::interval,
+                       date_trunc('month', current_date), interval '1 month') g(d)
+  LEFT JOIN public.page_views pv ON date_trunc('month', pv.created_at) = g.d
+  GROUP BY g.d ORDER BY g.d;
+$$;
+CREATE OR REPLACE FUNCTION public.views_by_country(days INT DEFAULT 30)
+RETURNS TABLE(pays TEXT, vues BIGINT) LANGUAGE sql STABLE AS $$
+  SELECT coalesce(nullif(country, ''), 'Inconnu'), count(id)
+  FROM public.page_views WHERE created_at >= (current_date - (days - 1))
+  GROUP BY coalesce(nullif(country, ''), 'Inconnu') ORDER BY 2 DESC LIMIT 20;
+$$;
+GRANT EXECUTE ON FUNCTION public.views_daily(INT) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.views_monthly(INT) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.views_by_country(INT) TO authenticated;

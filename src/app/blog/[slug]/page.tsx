@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { Calendar, Clock, MessageSquare } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -95,8 +96,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   // Incrémenter le compteur de vues via la fonction SECURITY DEFINER (voir migration 0001).
   await supabase.rpc('increment_view_count', { article_id: article.id });
 
-  // Ajouter la vue dans l'historique en temps réel (pour le dashboard admin)
-  await supabase.from('page_views').insert([{ article_id: article.id, session_id: 'anonymous-server' }]);
+  // Ajouter la vue dans l'historique en temps réel (pour le dashboard admin),
+  // avec le pays du visiteur si fourni par l'hébergeur (en-tête géoloc Vercel).
+  const requestHeaders = await headers();
+  const country =
+    requestHeaders.get('x-vercel-ip-country') ||
+    requestHeaders.get('cf-ipcountry') ||
+    null;
+  await supabase.from('page_views').insert([
+    { article_id: article.id, session_id: 'anonymous-server', country },
+  ]);
 
   // JSON-LD Schema.org pour les résultats enrichis Google
   const jsonLd = {
