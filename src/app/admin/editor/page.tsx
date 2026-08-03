@@ -166,6 +166,8 @@ function AdminEditor() {
       const finalExcerpt = excerpt || content.substring(0, 150) + "...";
 
       // 3. Insérer ou Mettre à jour dans la base de données
+      const nowIso = new Date().toISOString();
+
       const articleData: {
         title: string;
         slug: string;
@@ -175,6 +177,8 @@ function AdminEditor() {
         excerpt: string;
         status: 'draft' | 'published';
         featured_image?: string;
+        created_at?: string;
+        updated_at?: string;
       } = {
         title,
         slug,
@@ -182,8 +186,18 @@ function AdminEditor() {
         author_id: userData.user.id,
         content,
         excerpt: finalExcerpt,
-        status
+        status,
+        // On horodate toujours la dernière modification.
+        updated_at: nowIso,
       };
+
+      // Date d'affichage = date de publication. On la (re)cale sur maintenant
+      // à chaque publication, pour qu'un brouillon rédigé il y a plusieurs jours
+      // — ou un article mis à jour — porte une date récente, jamais la date de
+      // création du brouillon. Les brouillons gardent leur horodatage d'origine.
+      if (status === 'published') {
+        articleData.created_at = nowIso;
+      }
 
       if (featured_image) {
         articleData.featured_image = featured_image;
