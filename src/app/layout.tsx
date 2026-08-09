@@ -78,6 +78,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
   },
+  verification: {
+    google: "NAteBjeMtqy3FF7j-FqTciQ8k2gnaD9RtGilIMa0P_g",
+  },
 };
 
 import { GoogleAnalytics } from '@next/third-parties/google';
