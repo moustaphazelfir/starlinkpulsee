@@ -216,6 +216,24 @@ function AdminEditor() {
 
       if (saveError) throw saveError;
 
+      // Notifie IndexNow (Bing, Yandex…) pour une indexation quasi instantanée,
+      // uniquement pour un article publié (un brouillon n'est pas crawlable).
+      if (status === "published") {
+        const base =
+          process.env.NEXT_PUBLIC_SITE_URL || "https://starlinkpulsee.com";
+        try {
+          await fetch("/api/indexnow", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              urls: [`${base}/blog/${slug}`, `${base}/blog`, base],
+            }),
+          });
+        } catch {
+          // L'échec de l'indexation ne doit jamais bloquer la sauvegarde.
+        }
+      }
+
       setIsSaved(true);
       setTimeout(() => {
         setIsSaved(false);
